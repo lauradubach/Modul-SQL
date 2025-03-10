@@ -106,3 +106,55 @@ SELECT field2 AS grpvalue, nr, summe FROM (
     GROUP BY field2
 ) AS final_query
 ORDER BY nr;
+
+# Datenbank-Transaktionen und ACID-Prinzipien
+
+## Grundbegriffe
+- **Datenintegrität**: Korrektheit und Konsistenz von Daten.
+- **Transaktion**: Gruppe von SQL-Operationen als unteilbare Einheit.
+- **ROLLBACK**: Setzt alle Änderungen einer Transaktion zurück.
+- **COMMIT**: Bestätigt und speichert Änderungen dauerhaft.
+- **LOCK**: Sperre auf Daten, um parallele Änderungen zu verhindern.
+- **Deadlock**: Zwei Transaktionen blockieren sich gegenseitig.
+- **Timeout**: Eine Transaktion wird abgebrochen, weil sie zu lange auf eine Sperre wartet.
+- **IsolationLevel**: Bestimmt, wie Transaktionen voneinander getrennt sind.
+
+## ACID-Prinzipien (Grundlage für Transaktionen)
+- **Atomicity**: Alles oder nichts – eine Transaktion wird komplett ausgeführt oder verworfen.
+- **Consistency**: Daten bleiben vor und nach der Transaktion in einem gültigen Zustand.
+- **Isolation**: Parallele Transaktionen beeinflussen sich nicht.
+- **Durability**: Erfolgreiche Transaktionen bleiben dauerhaft gespeichert.
+
+## Problemfälle durch gleichzeitigen Zugriff
+- **Dirty Read**: Lesen nicht bestätigter (unbestätigter) Daten.
+- **Non-Repeatable Read**: Unterschiedliche Werte beim erneuten Lesen derselben Daten.
+- **Phantom Read**: Änderungen in der Anzahl oder Existenz von Datensätzen.
+
+## SQL-Isolationsstufen
+
+| Isolationslevel   | Verhindert Dirty Reads | Verhindert Non-Repeatable Reads | Verhindert Phantom Reads |
+|-------------------|----------------------|-----------------------------|-----------------------|
+| Read Uncommitted | ❌ | ❌ | ❌ |
+| Read Committed   | ✅ | ❌ | ❌ |
+| Repeatable Read  | ✅ | ✅ | ❌ |
+| Serializable     | ✅ | ✅ | ✅ |
+
+## Transaktionssteuerung
+```sql
+START TRANSACTION; -- Beginn einer Transaktion
+
+COMMIT; -- Änderungen übernehmen
+ROLLBACK; -- Änderungen verwerfen
+
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; -- Setzt die gewünschte Isolationsstufe
+```
+
+## **Sperren und Konflikte**
+- **FOR UPDATE**: Sperrt eine Zeile für Änderungen.
+- **Locks und Timeouts**: Sperren können Timeouts verursachen, wenn eine Transaktion zu lange auf eine Freigabe wartet.
+- **Deadlocks analysieren**: Informationen über blockierte Transaktionen abrufen:
+  ```sql
+  SELECT * FROM sys.innodb_lock_waits;
+  ```
+
+```
