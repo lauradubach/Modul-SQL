@@ -167,3 +167,87 @@ Ein Index kann für eine einzelne Spalte oder eine Folge von Spalten einer Daten
 Er besteht aus einer oder mehreren **Invertierungslisten**.  
 Ein Index enthält in der Regel einen **"Schlüssel"** oder direkten Link zur ursprünglichen Datenzeile.  
 Dadurch kann die vollständige Zeile effizient abgerufen werden.
+
+## Execution Plan
+
+SQL-Abfragen werden vom DBMS analysiert (Parsing), woraufhin ein **Execution Plan** erstellt wird. Dieser Plan beschreibt den effizientesten Zugriffspfad für die Ausführung der Anfrage.
+
+### Optimizer
+Ein Optimizer bewertet verschiedene mögliche Ausführungspläne und wählt den effizientesten aus.
+
+### Anzeigen des Execution Plans
+Je nach Datenbanksystem gibt es verschiedene Befehle:
+
+- **MySQL:** `EXPLAIN SELECT ...` oder `EXPLAIN ANALYZE`  
+- **PostgreSQL:** `EXPLAIN SELECT ...` oder `EXPLAIN ANALYZE`  
+- **SQL Server:** `SET SHOWPLAN_ALL ON;`, `EXPLAIN` (grafischer Plan in SSMS)
+
+## Performance & Benchmarking
+
+Vor Optimierungen sollte ein Benchmark durchgeführt werden, um die aktuelle Performance zu messen. Mögliche Methoden:
+
+- **MySQL:** `SHOW PROFILES;`
+- **PostgreSQL:** `EXPLAIN ANALYZE`
+- **SQL Server:** Aktivieren der **Client Statistics** in SSMS
+
+## Indizes
+
+Ein **Index** ist eine Datenstruktur, die die Suche in der Datenbank beschleunigt. Er funktioniert wie ein **Inhaltsverzeichnis** in einem Buch.
+
+### Vorteile:
+- Schnellere Abfragen, da weniger Zeilen durchsucht werden müssen.
+
+### Nachteile:
+- Erhöhte Schreibkosten, da Indizes bei Änderungen aktualisiert werden müssen.
+
+### Auswahl der Spalten für Indizes:
+- **Geeignet:** Spalten in `WHERE`, `JOIN`, `ORDER BY`, `GROUP BY`
+- **Weniger geeignet:** Selten genutzte Spalten oder Spalten mit vielen Duplikaten
+
+### Typen von Indizes:
+- **B-Bäume** (Standard)
+- **Hash-Indexe** (schnell bei exakten Vergleichen)
+- **Volltextsuche-Indexe** (für Textsuche)
+- **Räumliche Indexe** (für geografische Daten)
+
+## Gründe für schlechte Performance
+
+1. **Locks & Blockierungen**  
+   - Gleichzeitige Transaktionen blockieren sich gegenseitig.
+   
+2. **Suboptimale Abfragen**  
+   - Unnötige Spalten, komplexe Berechnungen oder verschachtelte Subqueries.
+
+3. **Ineffiziente Joins**  
+   - Joins über große Tabellen ohne passende Indizes.
+
+4. **Fehlende oder ineffiziente Indizes**  
+   - Zu viele oder schlecht gewählte Indizes verlangsamen Abfragen.
+
+5. **Falsche Datenbankkonfiguration**  
+   - Ungünstige Buffergrößen oder Caching-Strategien.
+
+## Benutzerverwaltung (Autorisierung)
+
+Benutzer und Rechteverwaltung variieren je nach RDBMS. Grundlegende Befehle:
+
+```sql
+CREATE USER user1@localhost IDENTIFIED BY 'passwort';
+DROP USER user1@localhost;
+GRANT SELECT, INSERT ON mydb TO 'user2'@'%';
+REVOKE DELETE ON mydb FROM 'user2'@'%';
+```
+
+**Tipps:**
+- Jeder Nutzer sollte eigene Anmeldedaten haben.
+- **Least Privilege Prinzip**: Nur notwendige Rechte vergeben.
+- Trennung von Lese- und Schreibrechten zur Absicherung gegen SQL-Injection.
+
+## Backup & Recovery
+
+Je nach Umgebung können verschiedene Backup-Methoden genutzt werden:
+
+- **Cloud-Services (PaaS, SaaS):** Integrierte Backup-Funktionen nutzen.
+- **Eigene Instanzen:** Nutzung von **Snapshots** oder **Datenbank-eigenen Backup-Tools**.
+
+Ein durchdachtes Backup- und Recovery-Konzept schützt vor Datenverlust.
