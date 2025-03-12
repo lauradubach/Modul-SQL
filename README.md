@@ -157,4 +157,13 @@ SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; -- Setzt die gewünschte Isolat
   SELECT * FROM sys.innodb_lock_waits;
   ```
 
-```
+# Datenbankindex
+
+Ein **Datenbankindex** ist eine Datenstruktur, die die Suche und das Sortieren in einer Datenbank beschleunigt. Er ist eine Art Inhaltsverzeichnis, das auf bestimmte Felder in einer Datenbanktabelle verweist.
+
+## Wie funktioniert ein Datenbankindex?
+
+Ein Index kann für eine einzelne Spalte oder eine Folge von Spalten einer Datenbanktabelle definiert werden.  
+Er besteht aus einer oder mehreren **Invertierungslisten**.  
+Ein Index enthält in der Regel einen **"Schlüssel"** oder direkten Link zur ursprünglichen Datenzeile.  
+Dadurch kann die vollständige Zeile effizient abgerufen werden.
