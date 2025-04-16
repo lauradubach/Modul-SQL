@@ -251,3 +251,46 @@ Je nach Umgebung können verschiedene Backup-Methoden genutzt werden:
 - **Eigene Instanzen:** Nutzung von **Snapshots** oder **Datenbank-eigenen Backup-Tools**.
 
 Ein durchdachtes Backup- und Recovery-Konzept schützt vor Datenverlust.
+
+# Python
+
+Ein Python-Skript mit Zugriff auf eine Datenbank ist grundsätzlich wie folgt aufgebaut:
+
+import mysql.connector
+
+# Verbindungsinformationen
+
+```python
+config = {
+    'user': '<user>',  # Mit MySQL-Benutzernamen ersetzen
+    'password': '<passwort>',  # Passwort ersetzen
+    'host': '<Server>',         # IP-Adresse/Hostname des DB-Servers
+    'port': '<port>',     # Port-Nummer angeben (Default, falls nicht angegeben: 3306)
+    'database': '<dbname>',  # Namen der Datenbank angeben
+    'raise_on_warnings': True
+}
+
+try:
+    # Verbindung zur Datenbank herstellen mit obigen Vorgaben
+    conn = mysql.connector.connect(**config)
+
+    # Cursor erstellen
+    cursor = conn.cursor()
+
+    # SQL-Anfrage ausführen mittels Cursor
+    cursor.execute(f"SELECT * FROM mysql.TABLES")
+
+    for row in cursor.fetchall():
+        print(row)
+
+except mysql.connector.Error as err:
+    print(f"Fehler: {err}")
+
+finally:
+    # Verbindung schließen
+    if conn.is_connected():
+        cursor.close()
+        conn.close()
+        print("Verbindung zur Datenbank wurde geschlossen.")
+```
+
