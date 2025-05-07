@@ -294,3 +294,53 @@ finally:
         print("Verbindung zur Datenbank wurde geschlossen.")
 ```
 
+# etcd installieren auf einer Ubuntu Instanz
+
+## Install
+
+wget https://github.com/etcd-io/etcd/releases/download/v3.6.0-rc.4/etcd-v3.6.0-rc.4-linux-amd64.tar.gz
+
+tar xvf etcd-v3.6.0-rc.4-linux-amd64.tar.gz
+
+mv etcd-v3.6.0-rc.4-linux-amd64 etcd
+
+cd etcd
+
+sudo mv etcd etcdctl etcdutl /usr/local/bin/
+
+sudo useradd -r -s /sbin/nologin etcd
+sudo mkdir -p /var/lib/etcd
+sudo chown etcd:etcd /var/lib/etcd
+
+sudo vim /etc/systemd/system/etcd.service
+´´´
+[Unit]
+Description=etcd key-value store
+Documentation=https://etcd.io
+After=network.target
+
+[Service]
+User=etcd
+Type=notify
+ExecStart=/usr/local/bin/etcd \
+  --name default \
+  --data-dir /var/lib/etcd \
+  --listen-client-urls http://127.0.0.1:2379 \
+  --advertise-client-urls http://127.0.0.1:2379
+
+Restart=on-failure
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target
+´´´
+
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable etcd
+sudo systemctl start etcd
+
+
+etcdctl --endpoints=http://127.0.0.1:2379 endpoint health
+
+Doku: https://gitlab.com/taher.alsaegh/itcne24/-/blob/main/20_Semester/sql/NoSql/etcd/anleitung.md?ref_type=heads
